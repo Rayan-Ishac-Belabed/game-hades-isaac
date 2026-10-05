@@ -1,0 +1,71 @@
+{
+  "brief": {
+    "oneLine": "A Hades run where boon altars offer a choose-1-of-3 pick of Isaac-style items instead of boons.",
+    "hostGame": "Hades (d:\\steam\\steamapps\\common\\Hades)",
+    "requiredGames": ["Hades"],
+    "isaacRole": "Inspiration only: original items and names, no Isaac art or files. Make Isaac required only if the owner asks for it.",
+    "players": "Solo (Hades has no multiplayer)",
+    "firstMinute": "Before the run, pick one starter item in the House of Hades. Then play normally; every boon reward shows 3 items to choose from.",
+    "firstPlayableMustHave": "About 15 items, boons replaced everywhere, effects: stats, poison, piercing, homing",
+    "loaderPlan": "Hades has no loader Melty installs by itself: bundle a community Hades mod loader if its license allows, with credit. Confirm with game_info and one_click_check.",
+    "status": "Design only. Nothing built or tested. Every hook below is unverified."
+  },
+  "sheets": {
+    "items": {
+      "columns": ["id", "name", "rarity", "group", "effectId", "magnitude", "tradeoff", "stacks", "appliesTo", "verified"],
+      "rows": [
+        ["sour_bulb", "Sour Bulb", "common", "stat", "attack_speed", "+15%", null, "additive", "all weapons", false],
+        ["iron_heart", "Iron Heart", "common", "stat", "max_health", "+25", null, "additive", "player", false],
+        ["swift_sandal", "Swift Sandal", "common", "stat", "move_speed", "+10%", null, "additive", "player", false],
+        ["heavy_fist", "Heavy Fist", "common", "stat", "damage", "+15%", null, "additive", "all weapons", false],
+        ["quick_step", "Quick Step", "rare", "stat", "dash_cooldown", "-15%", null, "additive", "player", false],
+        ["thick_skin", "Thick Skin", "rare", "stat", "damage_taken", "-10%", "move_speed -3%", "additive", "player", false],
+        ["venom_drop", "Venom Drop", "common", "poison", "poison", "3 dmg/s for 3s on hit", null, "duration +1s per copy", "all weapons", false],
+        ["rotten_tooth", "Rotten Tooth", "rare", "poison", "poison", "30% chance, 5 dmg/s for 4s", null, "chance +10% per copy", "all weapons", false],
+        ["blighted_blade", "Blighted Blade", "rare", "poison", "poison", "every hit, 2 dmg/s for 3s", "damage -5%", "dps +1 per copy", "all weapons", false],
+        ["needle_point", "Needle Point", "common", "piercing", "piercing", "attacks pass through 1 enemy", null, "+1 enemy per copy", "ranged attacks (Cast, Bow, Rail)", false],
+        ["spear_shaft", "Spear Shaft", "rare", "piercing", "piercing", "attacks pass through all enemies", "damage -10%", "no extra effect", "ranged attacks", false],
+        ["ghost_shot", "Ghost Shot", "epic", "piercing", "piercing", "pass through 2 enemies and walls", null, "+1 enemy per copy", "ranged attacks", false],
+        ["lodestone", "Lodestone", "common", "homing", "homing", "weak homing", null, "strength +25% per copy", "ranged attacks", false],
+        ["compass_charm", "Compass Charm", "rare", "homing", "homing", "medium homing, bends toward nearest enemy", null, "strength +25% per copy", "ranged attacks", false],
+        ["heat_seeker", "Heat Seeker", "epic", "homing", "homing", "strong homing", "attack speed -10%", "strength +20% per copy", "ranged attacks", false]
+      ]
+    },
+    "effects": {
+      "columns": ["effectId", "kind", "params", "needsGameHook", "openQuestion", "verified"],
+      "rows": [
+        ["attack_speed", "stat", "multiplier on weapon attack rate", "weapon stat modifier", "Which Hades property or trait modifier controls it?", false],
+        ["max_health", "stat", "flat add to max health", "player health", "Check how Hades updates the health bar mid-run", false],
+        ["move_speed", "stat", "multiplier", "player speed", "Check dash interaction", false],
+        ["damage", "stat", "multiplier on outgoing damage", "damage modifier", "Does it also affect Cast and boons-free weapon aspects?", false],
+        ["dash_cooldown", "stat", "multiplier on dash recharge", "dash charges", "Hades uses dash charges: confirm how recharge is set", false],
+        ["damage_taken", "stat", "multiplier on incoming damage", "damage modifier", "Confirm it does not stack unexpectedly with armor traits", false],
+        ["poison", "on-hit status", "dps, duration, chance", "on-hit hook and a damage-over-time tick", "Reuse an existing Hades status effect or script a timer?", false],
+        ["piercing", "projectile property", "enemies passed, passes walls", "projectile properties", "Melee weapons have no projectile: confirm which weapons and aspects support it", false],
+        ["homing", "projectile property", "turn rate", "projectile steering", "Does Hades have a homing property to enable, or must it be scripted per frame?", false]
+      ]
+    },
+    "hooks": {
+      "columns": ["hookId", "what", "replaces", "needs", "verified"],
+      "rows": [
+        ["boon_offer", "Show 3 items instead of the god boon choice when a boon reward is opened", "boon altar choice screen", "Find the reward-spawn and choice-menu code in Content/Scripts", false],
+        ["item_store", "Track picked items and copies for the current run", "run state", "A per-run table that resets at run start and survives room changes", false],
+        ["starter_pick", "Choose one starter item in the House before the run starts", "House of Hades, run start", "A place to offer the pick (NPC interaction, menu, or first room)", false],
+        ["item_display", "Show item names and short text on pickup, and a list of owned items", "boon HUD and pickup text", "Reuse Hades' boon menu and text format", false],
+        ["effect_apply", "Apply stat, poison, piercing and homing effects from the item list", "weapon and player setup", "Re-apply after room load and after weapon aspect change", false]
+      ]
+    },
+    "starterPick": {
+      "columns": ["slot", "pool", "rule"],
+      "rows": [
+        ["starter", "any common item", "pick 1 of 3, randomly drawn each run"]
+      ]
+    }
+  },
+  "preflightToDo": [
+    "Read Content/Scripts to confirm every hook and effect marked verified:false",
+    "Check game_info and search_mashups on Melty for loaders and any similar existing mashup",
+    "Decide the loader and its license, with credit, and run one_click_check",
+    "Resolve whether piercing and homing can apply to melee weapons, or limit them to ranged attacks"
+  ]
+}
